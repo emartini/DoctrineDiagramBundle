@@ -45,6 +45,14 @@ class AssociationField extends Field
         $this->owningSide = $mapping['isOwningSide'];
         switch ($this->type)
         {
+            case CMI::ONE_TO_ONE:
+                $this->cardinality = 1;
+                $this->other = array(
+                    'entity' => $mapping['targetEntity'],
+                    'field' => $mapping['mappedBy'],
+                    'cardinality' => '1',
+                );
+                break;
             case CMI::ONE_TO_MANY:
                 $this->cardinality = 1;
                 $this->other = array(
@@ -60,6 +68,8 @@ class AssociationField extends Field
                     'field' => $mapping['inversedBy'],
                     'cardinality' => '1',
                 );
+                break;
+            case CMI::MANY_TO_MANY:
                 break;
         }
     }

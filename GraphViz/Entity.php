@@ -12,6 +12,7 @@ class Entity
     protected $fields = array();
     protected $name;
     protected $associations = array();
+    protected $subClasses = array();
 
     public function __construct($em, $class, $graph)
     {
@@ -22,6 +23,13 @@ class Entity
 
     protected function init()
     {
+        foreach ($this->metadata->subClasses as $subClass) {
+            $discr = array_flip($this->metadata->discriminatorMap);
+            $this->subClasses[] = array(
+                'entity' => $subClass,
+                'discr'  => $discr[$subClass],
+            );
+        }
         foreach ($this->metadata->getFieldNames() as $field)
         {
             $this->fields[$field] = new Field($field, $this->metadata);
@@ -84,16 +92,26 @@ class Entity
         return sprintf($base, join('', $rows));
     }
 
+    protected function getFieldAssociation($entity, $field)
+    {
+        if (empty($field)) {
+            return $entity;
+        } else {
+            return sprintf('%s:%s', $entity, $field);
+        }
+    }
+
     protected function getAssociations()
     {
         $associations = array();
         foreach ($this->associations as $field) {
             if ($field->isOwningSide()) {
                 $other = $field->getOther();
+
                 $associations[] = array(
                     'fields' => array(
-                        sprintf('%s:%s', $this->getSafeName(), $field->getName()),
-                        sprintf('%s:%s', $this->getSafeName($other['entity']), $other['field']),
+                        $this->getFieldAssociation($this->getSafeName(), $field->getName()),
+                        $this->getFieldAssociation($this->getSafeName($other['entity']), $other['field']),
                     ),
                     'attributes' => array(
                         'headlabel' => "\"{$field->getCardinality()}\"",
@@ -105,11 +123,32 @@ class Entity
         return $associations;
     }
 
+    protected function getSubClasses()
+    {
+        $subClasses = array();
+        foreach ($this->subClasses as $subClass) {
+            $subClasses[] = array(
+                'fields' => array(
+                    $this->getSafeName($subClass['entity']),
+                    $this->getSafeName(),
+                ),
+                'attributes' => array(
+                    'arrowhead' => "\"empty\"",
+                    'taillabel' => "\"{$subClass['discr']}\"",
+                ),
+            );
+        }
+        return $subClasses;
+    }
+
     public function draw()
     {
         $this->graph->node($this->getSafeName(), array('label' => $this->getLabel()));
         foreach ($this->getAssociations() as $association) {
             $this->graph->edge($association['fields'], $association['attributes']);
+        }
+        foreach ($this->getSubClasses() as $subClass) {
+            $this->graph->edge($subClass['fields'], $subClass['attributes']);
         }
     }
 }
