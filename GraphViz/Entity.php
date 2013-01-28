@@ -95,6 +95,10 @@ class Entity
                         sprintf('%s:%s', $this->getSafeName(), $field->getName()),
                         sprintf('%s:%s', $this->getSafeName($other['entity']), $other['field']),
                     ),
+                    'attributes' => array(
+                        'headlabel' => "\"{$field->getCardinality()}\"",
+                        'taillabel' => "\"{$other['cardinality']}\"",
+                    ),
                 );
             }
         }
@@ -105,7 +109,7 @@ class Entity
     {
         $this->graph->node($this->getSafeName(), array('label' => $this->getLabel()));
         foreach ($this->getAssociations() as $association) {
-            $this->graph->edge($association['fields']);
+            $this->graph->edge($association['fields'], $association['attributes']);
         }
     }
 }

@@ -9,6 +9,7 @@ class AssociationField extends Field
 {
     protected $other;
     protected $owningSide;
+    protected $cardinality;
 
     public function getLabel()
     {
@@ -29,6 +30,11 @@ class AssociationField extends Field
         return $this->other;
     }
 
+    public function getCardinality()
+    {
+        return $this->cardinality;
+    }
+
     protected function init()
     {
         if ($this->metadata->isIdentifier($this->name)) {
@@ -40,15 +46,19 @@ class AssociationField extends Field
         switch ($this->type)
         {
             case CMI::ONE_TO_MANY:
+                $this->cardinality = 1;
                 $this->other = array(
                     'entity' => $mapping['targetEntity'],
                     'field' => $mapping['mappedBy'],
+                    'cardinality' => '*',
                 );
                 break;
             case CMI::MANY_TO_ONE:
+                $this->cardinality = '*';
                 $this->other = array(
                     'entity' => $mapping['targetEntity'],
                     'field' => $mapping['inversedBy'],
+                    'cardinality' => '1',
                 );
                 break;
         }
