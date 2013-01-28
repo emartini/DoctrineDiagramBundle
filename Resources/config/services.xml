@@ -1,0 +1,19 @@
+<?xml version="1.0" ?>
+
+<container xmlns="http://symfony.com/schema/dic/services"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://symfony.com/schema/dic/services http://symfony.com/schema/dic/services/services-1.0.xsd">
+
+    <parameters>
+        <parameter key="warseph_doctrine_diagram.generator.class">Warseph\Bundle\DoctrineDiagramBundle\GraphViz\Generator</parameter>
+        <parameter key="warseph_doctrine_diagram.generator.entities" type="collection">
+        </parameter>
+    </parameters>
+
+    <services>
+        <service id="warseph_doctrine_diagram.generator" class="%warseph_doctrine_diagram.generator.class%">
+            <argument type="service" id="doctrine.orm.entity_manager" />
+            <argument>%warseph_doctrine_diagram.generator.entities%</argument>
+        </service>
+    </services>
+</container>
