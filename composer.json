@@ -1,5 +1,5 @@
 {
-    "name": "warseph/doctrine-diagram",
+    "name": "warseph/doctrine-diagram-bundle",
     "description": "Doctrine ERD generator",
     "type": "symfony-bundle",
     "keywords": ["doctrine", "erd"],
@@ -13,12 +13,11 @@
         }
     ],
     "require": {
-        "php":                       ">=5.3.2",
-        "symfony/framework-bundle":  ">=2.1.0",
-        "symfony/framework-bundle":  ">=2.1.0",
-        "doctrine/orm":              ">=2.2.3,<2.4-dev",
-        "doctrine/doctrine-bundle":  ">=1.1.0",
-        "mylen/graphviz":            "dev-master"
+        "php":                      ">=5.3.3",
+        "symfony/symfony":          "2.1.*",
+        "doctrine/orm":             ">=2.2.3,<2.4-dev",
+        "doctrine/doctrine-bundle": "1.0.*",
+        "mylen/graphviz":           "dev-master"
     },
     "autoload": {
         "psr-0": { "Warseph\\Bundle\\DoctrineDiagramBundle": "" }
