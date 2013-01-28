@@ -43,7 +43,9 @@ class Field
         }
         $mapping = $this->metadata->getFieldMapping($this->name);
         $this->type = $mapping['type'];
-        $this->length = $mapping['length'];
+        if (!empty($mapping['length'])) {
+            $this->length = $mapping['length'];
+        }
     }
 
 }
